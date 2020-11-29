@@ -1,6 +1,5 @@
-An extremely basic web server for serving static content
-
-## Docs
+# DaServe
+`daserve` An extremely basic web server for serving static content
 
 ## Install
 Clone the repo and run `go install` from inside the cloned directory

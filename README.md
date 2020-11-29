@@ -13,10 +13,14 @@ To start with default settings (and content), simply run:
 
 ```
 $ daserve --help
-Runs a basic static content web-server, configure using the following flags:
+Runs a basic web-server for serving static content
 
-  -d string
-        Directory to serve (default "./static")
+'dir' is the directory to serve (default "./static")
+
+Usage:
+  daserve [flags] [dir]
+
+Flags:
   -h string
         Host address to bind (default "127.0.0.1")
   -p string

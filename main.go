@@ -10,22 +10,36 @@ import (
 	"github.com/gorilla/handlers"
 )
 
-var host string
-var port string
-var dir string
-
 func usage() {
-	fmt.Fprintf(os.Stderr, "Runs a basic static content web-server, configure using the following flags:\n\n")
+	msg := `Runs a basic web-server for serving static content
+
+'dir' is the directory to serve (default "./static")
+
+Usage:
+  daserve [flags] [dir]
+
+Flags:
+`
+	fmt.Fprintf(os.Stderr, msg)
 	flag.PrintDefaults()
 }
 
 func main() {
+	var host string
+	var port string
+	var dir string
+
 	flag.Usage = usage
 
 	flag.StringVar(&host, "h", "127.0.0.1", "Host address to bind")
 	flag.StringVar(&port, "p", "9080", "Port to listen on")
-	flag.StringVar(&dir, "d", "./static", "Directory to serve")
+	// flag.StringVar(&dir, "d", "./static", "Directory to serve")
 	flag.Parse()
+
+	dir = "./static"
+	if len(flag.Args()) == 1 {
+		dir = flag.Args()[0]
+	}
 
 	address := fmt.Sprintf("%s:%s", host, port)
 

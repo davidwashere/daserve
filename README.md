@@ -21,6 +21,7 @@ Usage:
   daserve [flags] [dir]
 
 Flags:
+  -g    Opens default browser on launch
   -h string
         Host address to bind (default "127.0.0.1")
   -p string

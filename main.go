@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/gorilla/handlers"
 	"github.com/pkg/browser"
@@ -30,11 +31,15 @@ func main() {
 	var port string
 	var dir string
 	var gui bool
+	var redirect404 string
+	var redirt404ToIndex bool
 
 	flag.Usage = usage
 
 	flag.StringVar(&host, "h", "127.0.0.1", "Host address to bind")
 	flag.StringVar(&port, "p", "9080", "Port to listen on")
+	flag.StringVar(&redirect404, "404", "", "On 404, serve up this page (and change status to 200), ie: \"/index.html\"")
+	flag.BoolVar(&redirt404ToIndex, "404i", false, "When true will serve up /index.html on 404s, does nothing when --404 also set")
 	flag.BoolVar(&gui, "g", false, "Opens default browser on launch")
 	flag.Parse()
 
@@ -47,8 +52,15 @@ func main() {
 
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
-	fs := http.FileServer(http.Dir(dir))
-	http.Handle("/", fs)
+	if redirect404 != "" {
+		path := filepath.Join(dir, redirect404)
+		http.HandleFunc("/", wrapHandler(http.FileServer(http.Dir(dir)), path))
+	} else if redirt404ToIndex {
+		path := filepath.Join(dir, "/index.html")
+		http.HandleFunc("/", wrapHandler(http.FileServer(http.Dir(dir)), path))
+	} else {
+		http.Handle("/", http.FileServer(http.Dir(dir)))
+	}
 
 	fmt.Printf("Listening on %v serving from %v\n\n", address, dir)
 	if gui {

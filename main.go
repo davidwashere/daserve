@@ -71,5 +71,7 @@ func main() {
 		go browser.OpenURL(fmt.Sprintf("http://%s", address))
 	}
 
-	http.ListenAndServe(address, handlers.LoggingHandler(os.Stdout, http.DefaultServeMux))
+	if err := http.ListenAndServe(address, handlers.LoggingHandler(os.Stdout, http.DefaultServeMux)); err != nil {
+		fmt.Println(err)
+	}
 }

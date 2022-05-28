@@ -30,15 +30,8 @@ func wrapHandler(h http.Handler, redirectDest string) http.HandlerFunc {
 		nfrw := &NotFoundRedirectRespWr{ResponseWriter: w}
 		h.ServeHTTP(nfrw, r)
 
-		// destWithQuery := redirectDest + "?" + r.URL.RawQuery
-		// r.
-
-		// log.Printf("Query: ?%s", r.URL.RawQuery)
 		if nfrw.status == 404 {
 			log.Printf("404: Redirecting %s to %s.", r.RequestURI, redirectDest)
-			// http.Redirect(w, r, destWithQuery, http.StatusFound)
-			// w.WriteHeader(http.StatusOK)
-			// w.Write([]byte("Hello"))
 			w.Header().Set("Content-Type", "text/html")
 
 			http.ServeFile(w, r, redirectDest)

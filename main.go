@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -22,7 +23,7 @@ Usage:
 
 Flags:
 `
-	fmt.Fprintf(os.Stderr, msg)
+	fmt.Fprint(os.Stderr, msg)
 	flag.PrintDefaults()
 }
 
@@ -37,11 +38,14 @@ func main() {
 	flag.Usage = usage
 
 	flag.StringVar(&host, "h", "127.0.0.1", "Host address to bind")
-	flag.StringVar(&port, "p", "9080", "Port to listen on")
+	flag.StringVar(&port, "p", "9080", "Port to listen on\n")
 	flag.StringVar(&redirect404, "404", "", "On 404, serve up this page (and change status to 200), ie: \"/index.html\"")
-	flag.BoolVar(&redirt404ToIndex, "404i", false, "When true will serve up /index.html on 404s, does nothing when --404 also set")
+	flag.BoolVar(&redirt404ToIndex, "404i", false, "When set will serve up /index.html on 404s, does nothing when -404 also set\nUseful when history.pushState used instead of # for SPA paths (history mode)")
 	flag.BoolVar(&gui, "g", false, "Opens default browser on launch")
 	flag.Parse()
+
+	// ref: https://github.com/golang/go/issues/32350
+	mime.AddExtensionType(".js", "application/javascript")
 
 	dir = "./static"
 	if len(flag.Args()) == 1 {
